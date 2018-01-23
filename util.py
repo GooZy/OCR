@@ -4,6 +4,8 @@
 # @Author  : Guo Ziyao
 import cv2
 import numpy as np
+from PIL import Image
+import pytesseract
 
 
 def show_img(img):
@@ -53,6 +55,13 @@ def correct_angle(img):
     img = cv2.warpAffine(img, M, (rows, cols), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
     # cv2.drawContours(img, contours, 0, (0, 0, 255), 1)
     return img
+
+
+def recgnize(img):
+    cv2.imwrite('tmp.jpg', img)
+    # pytesseract 0.1.8
+    code = pytesseract.image_to_string(cv2.imread('tmp.jpg'))
+    return code
 
 
 if __name__ == '__main__':
