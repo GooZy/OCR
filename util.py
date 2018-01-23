@@ -26,7 +26,13 @@ def correct_angle(img):
     ret, binary_img = cv2.threshold(blur, 0, 255, cv2.THRESH_OTSU | cv2.THRESH_BINARY_INV)
     edges = cv2.Canny(binary_img, 100, 200)
     image, contours, hierarchy = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    rect = cv2.minAreaRect(contours[0])
+    index = 0
+    for each in contours:
+        point = cv2.minAreaRect(each)[1]
+        if point[1] != 0 and point[0] != 0:
+            break
+        index += 1
+    rect = cv2.minAreaRect(contours[index])
     # angle = rect[2]
     # print angle
     points = cv2.boxPoints(rect)
@@ -63,8 +69,9 @@ def correct_angle(img):
 def recgnize(img):
     cv2.imwrite('tmp.jpg', img)
     # pytesseract 0.1.8
+    # http://hellosure.github.io/ocr/2014/10/11/tesseract-ocr
     # -psm 7: only recognize one line
-    code = pytesseract.image_to_string(cv2.imread('tmp.jpg'), config='-psm 7')
+    code = pytesseract.image_to_string(cv2.imread('tmp.jpg'), config="-psm 7 -c tessedit_char_whitelist='abcdefghijklmnopqrstuvwxyz'")
     return code
 
 

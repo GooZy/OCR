@@ -11,7 +11,7 @@ from util import recgnize
 from util import show_img
 
 
-def img_ocr(img_path):
+def img_ocr(img_path, test=False):
     img = cv2.imread(img_path)
     # 放大
     h, w = img.shape[: 2]
@@ -24,17 +24,24 @@ def img_ocr(img_path):
     # show_img(binary_img)
     # 倾斜矫正
     img = correct_angle(binary_img)
-    # show_img(img)
+    if test:
+        show_img(img)
     # 识别
     return recgnize(img)
 
 
-if __name__ == '__main__':
+def lets_go():
     duplicate = set()
     for each in glob.glob('/Users/guoziyao/Desktop/CR/cap1/*'):
+        print each
         result = img_ocr(each)
-        print ('%s: ' + result) % each
+        print result
         if result in duplicate:
             print 'OK: ' + result
             break
         duplicate.add(result)
+
+
+if __name__ == '__main__':
+    # lets_go()
+    print img_ocr('/Users/guoziyao/Desktop/CR/cap1/im1224.png', test=True)
