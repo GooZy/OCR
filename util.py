@@ -30,19 +30,21 @@ def correct_angle(img):
     # angle = rect[2]
     # print angle
     points = cv2.boxPoints(rect)
-    up, down, left, right = (1000, 0), (-1000, 0), (0, 1000), (0, -1000)
+    left, right, up, down = (1000, 0), (-1000, 0), (0, 1000), (0, -1000)
     for each in points:
-        y, x = each
-        if y <= up[0]:
-            up = (y, x)
-        if y >= down[0]:
-            down = (y, x)
-        if x <= left[1]:
-            left = (y, x)
-        if x >= right[1]:
-            right = (y, x)
+        x, y = each
+        if y <= up[1]:
+            up = (x, y)
+        if y >= down[1]:
+            down = (x, y)
+        if x <= left[0]:
+            left = (x, y)
+        if x >= right[0]:
+            right = (x, y)
     # print up, down, left, right
-    if up[1] > down[1]:
+    # cv2.rectangle(img, up, down, 1)
+    # show_img(img)
+    if up[0] > down[0]:
         x1, y1 = (up[0] + right[0]) / 2.0, (up[1] + right[1]) / 2.0
         x2, y2 = (down[0] + left[0]) / 2.0, (down[1] + left[1]) / 2.0
         angle = np.arctan((y1 - y2) / (x1 - x2)) * 180 / np.pi
@@ -51,6 +53,7 @@ def correct_angle(img):
         x2, y2 = (down[0] + right[0]) / 2.0, (down[1] + right[1]) / 2.0
         angle = np.arctan((y1 - y2) / (x1 - x2)) * 180 / np.pi
     rows, cols = img.shape[: 2]
+    # print angle
     M = cv2.getRotationMatrix2D((int(rows / 2), int(cols / 2)), angle, 1)
     img = cv2.warpAffine(img, M, (rows, cols), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
     # cv2.drawContours(img, contours, 0, (0, 0, 255), 1)
@@ -60,7 +63,8 @@ def correct_angle(img):
 def recgnize(img):
     cv2.imwrite('tmp.jpg', img)
     # pytesseract 0.1.8
-    code = pytesseract.image_to_string(cv2.imread('tmp.jpg'))
+    # -psm 7: only recognize one line
+    code = pytesseract.image_to_string(cv2.imread('tmp.jpg'), config='-psm 7')
     return code
 
 

@@ -24,7 +24,7 @@ def img_ocr(img_path):
     # show_img(binary_img)
     # 倾斜矫正
     img = correct_angle(binary_img)
-    show_img(img)
+    # show_img(img)
     # 识别
     return recgnize(img)
 
