@@ -3,6 +3,7 @@
 # @Time    : 2017/12/20 09:17
 # @Author  : Guo Ziyao
 import glob
+import subprocess
 
 import cv2
 
@@ -27,7 +28,7 @@ def img_ocr(img_path, test=False):
     if test:
         show_img(img)
     # 识别
-    return recgnize(img)
+    return recgnize(img), img
 
 
 def lets_go():
@@ -37,11 +38,24 @@ def lets_go():
         result = img_ocr(each)
         print result
         if result in duplicate:
-            print 'OK: ' + result
+            print 'OK: ' + result[0]
             break
         duplicate.add(result)
 
 
+def train():
+    index = 1
+    for each in glob.glob('/Users/guoziyao/Desktop/CR/cap1/*'):
+        result, img = img_ocr(each)
+        file_name = 'train_data/%s.jpg' % index
+        cv2.imwrite(file_name, img)
+        subprocess.check_output('convert %s %s.tiff' % (file_name, file_name), shell=True)
+        if index == 50:
+            break
+        index += 1
+
+
 if __name__ == '__main__':
     # lets_go()
-    print img_ocr('/Users/guoziyao/Desktop/CR/cap1/im1224.png', test=True)
+    # train()
+    print img_ocr('/Users/guoziyao/Desktop/CR/cap1/im1224.png', test=True)[0]
