@@ -47,6 +47,9 @@ def correct_angle(img):
             left = (x, y)
         if x >= right[0]:
             right = (x, y)
+    # 如果本身水平
+    if up[0] == down[0]:
+        return img
     # print up, down, left, right
     # cv2.rectangle(img, up, down, 1)
     # show_img(img)
@@ -66,12 +69,12 @@ def correct_angle(img):
     return img
 
 
-def recgnize(img):
+def recgnize(img, lang):
     cv2.imwrite('tmp.jpg', img)
     # pytesseract 0.1.8
     # http://hellosure.github.io/ocr/2014/10/11/tesseract-ocr
     # -psm 7: only recognize one line
-    code = pytesseract.image_to_string(cv2.imread('tmp.jpg'), config="-psm 7 -c tessedit_char_whitelist='abcdefghijklmnopqrstuvwxyz'")
+    code = pytesseract.image_to_string(cv2.imread('tmp.jpg'), config="-psm 7 -c tessedit_char_whitelist='abcdefghijklmnopqrstuvwxyz' -l %s" % lang)
     return code
 
 

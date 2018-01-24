@@ -12,7 +12,10 @@ from util import recgnize
 from util import show_img
 
 
-def img_ocr(img_path, test=False):
+def img_ocr(img_path, test=False, lang='eng'):
+    """
+    返回（识别结果，图片）
+    """
     img = cv2.imread(img_path)
     # 放大
     h, w = img.shape[: 2]
@@ -28,24 +31,25 @@ def img_ocr(img_path, test=False):
     if test:
         show_img(img)
     # 识别
-    return recgnize(img), img
+    return recgnize(img, lang), img
 
 
 def lets_go():
     duplicate = set()
     for each in glob.glob('/Users/guoziyao/Desktop/CR/cap1/*'):
         print each
-        result = img_ocr(each)
+        result = img_ocr(each, lang='qlalpha')[0].replace(' ', '')
         print result
         if result in duplicate:
-            print 'OK: ' + result[0]
+            print 'OK: ' + result
             break
         duplicate.add(result)
 
 
 def train():
     index = 1
-    for each in glob.glob('/Users/guoziyao/Desktop/CR/cap1/*'):
+    # 其实选几张包含所有26个字母的图片训练就行
+    for each in glob.glob('/Users/guoziyao/Desktop/my/OCR/train_data/*'):
         result, img = img_ocr(each)
         file_name = 'train_data/%s.jpg' % index
         cv2.imwrite(file_name, img)
@@ -56,6 +60,6 @@ def train():
 
 
 if __name__ == '__main__':
-    # lets_go()
+    lets_go()
     # train()
-    print img_ocr('/Users/guoziyao/Desktop/CR/cap1/im1224.png', test=True)[0]
+    # print img_ocr('/Users/guoziyao/Desktop/CR/cap1/im14.png', test=True)[0]
